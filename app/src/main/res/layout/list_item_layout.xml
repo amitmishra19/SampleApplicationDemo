@@ -4,9 +4,9 @@
     android:id="@+id/list_layout"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_marginLeft="5dp"
-    android:layout_marginRight="5dp"
-    android:layout_marginTop="3dp"
+    android:layout_marginLeft="@dimen/cardview_margin_left"
+    android:layout_marginRight="@dimen/cardview_margin_right"
+    android:layout_marginTop="@dimen/cardview_margin_top"
     android:focusableInTouchMode="true"
     app:cardCornerRadius="0dp"
     app:cardUseCompatPadding="true">
@@ -14,19 +14,19 @@
     <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="2dp"
-        android:background="#EDECEC">
+        android:layout_margin="@dimen/cardview_layout_margin"
+        android:background="@color/listitem_background">
 
         <TextView
             android:id="@+id/item_title"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_marginLeft="10dp"
-            android:layout_marginTop="15dp"
+            android:layout_marginLeft="@dimen/item_title_margin_left"
+            android:layout_marginTop="@dimen/item_title_margin_top"
             android:singleLine="true"
-            android:textColor="#3877B5"
-            android:textSize="20sp"
+            android:textColor="@color/listitem_title_text"
+            android:textSize="@dimen/item_title_text_size"
             android:textStyle="bold" />
 
         <RelativeLayout
@@ -41,20 +41,20 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentLeft="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp"
+                android:layout_marginLeft="@dimen/item_desc_margin_left"
+                android:layout_marginTop="@dimen/item_desc_margin_top"
                 android:layout_toLeftOf="@+id/item_thumbnail"
                 android:textColor="@android:color/black"
-                android:textSize="12sp" />
+                android:textSize="@dimen/item_desc_text_size" />
 
             <com.facebook.drawee.view.SimpleDraweeView xmlns:fresco="http://schemas.android.com/apk/res-auto"
                 android:id="@+id/item_thumbnail"
-                android:layout_width="120dp"
-                android:layout_height="80dp"
+                android:layout_width="@dimen/item_thumbnail_width"
+                android:layout_height="@dimen/item_thumbnail_height"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
-                android:layout_marginLeft="10dp"
-                android:padding="5dp"
+                android:layout_marginLeft="@dimen/item_thumbnail_margin_left"
+                android:padding="@dimen/item_thumbnail_padding"
                 android:scaleType="fitCenter"
                 fresco:placeholderImage="@drawable/no_image_available" />
 
