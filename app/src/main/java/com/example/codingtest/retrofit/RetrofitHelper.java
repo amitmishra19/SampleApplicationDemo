@@ -1,5 +1,9 @@
 package com.example.codingtest.retrofit;
 
+import android.util.Log;
+
+import com.example.codingtest.DemoApplication;
+
 import retrofit2.Call;
 import retrofit2.Response;
 import retrofit2.Retrofit;
@@ -47,6 +51,26 @@ public class RetrofitHelper {
             @Override
             public void onFailure(Call call, Throwable t) {
                 listener.onError(t.getLocalizedMessage());
+            }
+        });
+    }
+
+    /**
+     * it will make  asynchronous request and post the event to the EventBus
+     *
+     * @param call     call type used to request the data(we have to get call type form the apiservice interface)
+     */
+    public synchronized void sendRequest(Call call) {
+        call.enqueue(new retrofit2.Callback() {
+            @Override
+            public void onResponse(Call call, Response response) {
+                DemoApplication.eventBus.post(response);
+            }
+
+            @Override
+            public void onFailure(Call call, Throwable t) {
+                Log.d("SWAT", "Failed" + t.getLocalizedMessage());
+                DemoApplication.eventBus.post(t);
             }
         });
     }

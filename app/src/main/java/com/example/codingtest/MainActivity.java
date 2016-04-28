@@ -15,14 +15,15 @@ import com.example.codingtest.adapters.DataAdapter;
 import com.example.codingtest.beans.DataModel;
 import com.example.codingtest.beans.Row;
 import com.example.codingtest.retrofit.APIService;
-import com.example.codingtest.retrofit.Callback;
 import com.example.codingtest.retrofit.RetrofitHelper;
 import com.example.codingtest.utils.Utils;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
+import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -32,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefresh;
     private Toolbar mToolbar;
+    private boolean manualRefresh;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,13 +49,31 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         adapter = new DataAdapter(this, mDataSet);
         mRecyclerView.setAdapter(adapter);
+    }
 
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        DemoApplication.eventBus.register(this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
         //start the data fetch
         getData();
         handleSwipeRefresh();
     }
 
-    //Use retrofit to call the web API, fetch and parse the data.
+    @Override
+    protected void onStop() {
+        super.onStop();
+        DemoApplication.eventBus.unregister(this);
+    }
+
+    //Use retrofit to call the web API
+
     private void getData() {
         if (Utils.isDataNetworkConnected(this)) {
             //show the progress dialog for the first time only. after that pull to refresh progress indicator will be shown
@@ -64,36 +84,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
             Call<DataModel> tests = RetrofitHelper.newInstance().getAPIService(APIService.BASE_URL).getFacts();
-            RetrofitHelper.newInstance().sendRequest(tests, new Callback<DataModel>() {
-                @Override
-                public void onResponse(DataModel response) {
-                    Log.d("SWAT", " " + response.getRows().size());
-                    mToolbar.setTitle(response.getTitle());
-                    dismissProgressDialogs();
-
-                    List<Row> result = response.getRows();
-                    //remove any row from json which has no title OR no description
-                    mDataSet.addAll(Utils.cleanFactsData(result));
-
-                    //set the values to adapter and notify the same to refresh the list
-                    adapter.setModels(mDataSet);
-                    adapter.notifyDataSetChanged();
-
-                    if(mSwipeRefresh != null){
-                        Toast.makeText(MainActivity.this, getResources().getString(R.string.msg_list_update_success), Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-
-                @Override
-                public void onError(String error) {
-                    dismissProgressDialogs();
-                    if (error != null) {
-                        Log.d("SWAT", " " + error.toString());
-                        Toast.makeText(MainActivity.this, error, Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
+            RetrofitHelper.newInstance().sendRequest(tests);
         } else {
             showNoConnectionToast();
         }
@@ -107,6 +98,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onRefresh() {
                 if (Utils.isDataNetworkConnected(MainActivity.this)) {
+                    manualRefresh = true;
                     getData();
                 } else {
                     showNoConnectionToast();
@@ -130,5 +122,42 @@ public class MainActivity extends AppCompatActivity {
             mSwipeRefresh.setRefreshing(false);
         }
 
+    }
+
+    //Subscribe for the events from event bus, this will contain Response object in case web service call is successful
+    //This event is posted from RetrofitHelper
+    @Subscribe
+    public void getMessage(Response response) {
+        Log.d("SWAT", " " + response.body());
+        DataModel dataModel = (DataModel) response.body();
+        mToolbar.setTitle(dataModel.getTitle());
+        dismissProgressDialogs();
+
+        List<Row> result = dataModel.getRows();
+
+        if (!manualRefresh) {
+            mDataSet.clear();
+        }
+
+        //remove any row from json which has no title OR no description
+        mDataSet.addAll(Utils.cleanFactsData(result));
+
+        //set the values to adapter and notify the same to refresh the list
+        adapter.setModels(mDataSet);
+        adapter.notifyDataSetChanged();
+
+        if (mSwipeRefresh != null) {
+            Toast.makeText(MainActivity.this, getResources().getString(R.string.msg_list_update_success), Toast.LENGTH_SHORT).show();
+        }
+
+        manualRefresh = false;
+    }
+
+    //Subscribe for the events from event bus, this will contain Throwable object in case web service call is failed
+    //This event is posted from RetrofitHelper
+    @Subscribe
+    public void getMessage(Throwable error) {
+        Log.d("SWAT", " " + error.getLocalizedMessage());
+        Toast.makeText(MainActivity.this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
 }
