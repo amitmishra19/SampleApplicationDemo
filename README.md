@@ -1,2 +1,4 @@
-# SampleApplicationDemo
-# SampleApplicationDemo
+#This application is using the following 3rd party libraries. These libraries are are now popular trends in android development since they serve specific purpose and handles the common error scenarios, thus helping in faster application development, clean and less error prone code.
+#Retrofit : Using retrofit make it relatively easy to retrieve JSON from web services using the converter factory. It internally uses another library OkHttp and Gson. It avoids writing parsing logic.
+#Fresco : Its an Image management library. In fresco images aren't stored in the Java heap, but in the ashmem heap. Intermediate byte buffers are also stored in the native heap. This leaves a lot more memory available for applications to use. It reduces the risk of OutOfMemoryErrors. It also reduces the amount of garbage collection apps have to do, leading to better performance.
+#Otto Event bus : This library is used communication between various application component. Instead of traditional callback listener definition or message transfer through boradcasts, this mechanism make it more easy and clean code.
