@@ -1,6 +1,7 @@
 package com.example.codingtest;
 
 import android.app.ProgressDialog;
+import android.content.res.Configuration;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.v4.widget.SwipeRefreshLayout;
@@ -70,6 +71,12 @@ public class MainActivity extends AppCompatActivity {
     protected void onStop() {
         super.onStop();
         DemoApplication.eventBus.unregister(this);
+    }
+
+    @Override
+    public void onConfigurationChanged(Configuration newConfig) {
+        super.onConfigurationChanged(newConfig);
+        Log.d("SWAT", "new Configuration : " + newConfig.orientation);
     }
 
     //Use retrofit to call the web API
