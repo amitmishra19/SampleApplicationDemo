@@ -6,7 +6,7 @@ import com.google.gson.annotations.SerializedName;
 /**
  * Pojo class for each row in the facts json
  */
-public class Row {
+public class Fact {
 
     @SerializedName("title")
     @Expose

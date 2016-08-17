@@ -12,9 +12,9 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.widget.Toast;
 
-import com.example.codingtest.adapters.DataAdapter;
-import com.example.codingtest.beans.DataModel;
-import com.example.codingtest.beans.Row;
+import com.example.codingtest.adapters.FactsListAdapter;
+import com.example.codingtest.beans.Fact;
+import com.example.codingtest.beans.FactsDataModel;
 import com.example.codingtest.retrofit.APIService;
 import com.example.codingtest.retrofit.RetrofitHelper;
 import com.example.codingtest.utils.Utils;
@@ -28,8 +28,9 @@ import retrofit2.Response;
 
 public class MainActivity extends AppCompatActivity {
 
-    private List<Row> mDataSet = new ArrayList<>();
-    private DataAdapter adapter;
+    private static final String TAG = MainActivity.class.getCanonicalName();
+    private List<Fact> mDataSet = new ArrayList<>();
+    private FactsListAdapter adapter;
     private ProgressDialog mProgressDialog;
     private RecyclerView mRecyclerView;
     private SwipeRefreshLayout mSwipeRefresh;
@@ -48,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.my_recycler_view);
         mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new DataAdapter(this, mDataSet);
+        adapter = new FactsListAdapter(this, mDataSet);
         mRecyclerView.setAdapter(adapter);
     }
 
@@ -76,7 +77,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
-        Log.d("SWAT", "new Configuration : " + newConfig.orientation);
+        Log.d(TAG, "new Configuration : " + newConfig.orientation);
     }
 
     //Use retrofit to call the web API
@@ -90,7 +91,7 @@ public class MainActivity extends AppCompatActivity {
                 mProgressDialog.show();
             }
 
-            Call<DataModel> tests = RetrofitHelper.newInstance().getAPIService(APIService.BASE_URL).getFacts();
+            Call<FactsDataModel> tests = RetrofitHelper.newInstance().getAPIService(APIService.BASE_URL).getFacts();
             RetrofitHelper.newInstance().sendRequest(tests);
         } else {
             showNoConnectionToast();
@@ -135,12 +136,12 @@ public class MainActivity extends AppCompatActivity {
     //This event is posted from RetrofitHelper
     @Subscribe
     public void getMessage(Response response) {
-        Log.d("SWAT", " " + response.body());
-        DataModel dataModel = (DataModel) response.body();
-        mToolbar.setTitle(dataModel.getTitle());
+        Log.d(TAG, " " + response.body());
+        FactsDataModel factsDataModel = (FactsDataModel) response.body();
+        mToolbar.setTitle(factsDataModel.getTitle());
         dismissProgressDialogs();
 
-        List<Row> result = dataModel.getRows();
+        List<Fact> result = factsDataModel.getRows();
 
         if (!manualRefresh) {
             mDataSet.clear();
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity {
     //This event is posted from RetrofitHelper
     @Subscribe
     public void getMessage(Throwable error) {
-        Log.d("SWAT", " " + error.getLocalizedMessage());
+        Log.d(TAG, " " + error.getLocalizedMessage());
         Toast.makeText(MainActivity.this, error.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
     }
 }

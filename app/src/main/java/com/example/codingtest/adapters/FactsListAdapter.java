@@ -6,12 +6,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.example.codingtest.MainActivity;
 import com.example.codingtest.R;
-import com.example.codingtest.beans.Row;
+import com.example.codingtest.beans.Fact;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,26 +21,26 @@ import java.util.List;
  * It is using the latest RecyclerView.Adapter for better performance
  */
 
-public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataObjectHolder> {
+public class FactsListAdapter extends RecyclerView.Adapter<FactsListAdapter.FactsListObjectHolder> {
 
     private MainActivity mParentActivity;
-    List<Row> mDataSet;
+    List<Fact> mDataSet;
 
-    public DataAdapter(MainActivity context, List<Row> dataSet) {
+    public FactsListAdapter(MainActivity context, List<Fact> dataSet) {
         mParentActivity = context;
         mDataSet = new ArrayList<>(dataSet);
     }
 
-    public void setModels(List<Row> dataSet) {
+    public void setModels(List<Fact> dataSet) {
         mDataSet = new ArrayList<>(dataSet);
     }
 
-    public class DataObjectHolder extends RecyclerView.ViewHolder {
+    public class FactsListObjectHolder extends RecyclerView.ViewHolder {
         TextView mTitleTextView;
         TextView mDescriptionTextView;
         ImageView mThumbnailImageView;
 
-        public DataObjectHolder(View itemView) {
+        public FactsListObjectHolder(View itemView) {
             super(itemView);
 
             mTitleTextView = (TextView) itemView.findViewById(R.id.item_title);
@@ -51,20 +50,20 @@ public class DataAdapter extends RecyclerView.Adapter<DataAdapter.DataObjectHold
     }
 
     @Override
-    public DataObjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public FactsListObjectHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(mParentActivity).inflate(R.layout.list_item_layout, parent, false);
-        DataObjectHolder objectHolder = new DataObjectHolder(itemView);
+        FactsListObjectHolder objectHolder = new FactsListObjectHolder(itemView);
         return objectHolder;
     }
 
     @Override
-    public void onBindViewHolder(DataObjectHolder holder, int position) {
+    public void onBindViewHolder(FactsListObjectHolder holder, int position) {
         if (mDataSet != null && mDataSet.size() > 0) {
-            Row rowItem = mDataSet.get(position);
-            holder.mTitleTextView.setText(rowItem.getTitle());
-            holder.mDescriptionTextView.setText(rowItem.getDescription());
-            if (rowItem.getImageHref() != null && rowItem.getImageHref().length() > 0) {
-                holder.mThumbnailImageView.setImageURI(Uri.parse(rowItem.getImageHref()));
+            Fact factsItem = mDataSet.get(position);
+            holder.mTitleTextView.setText(factsItem.getTitle());
+            holder.mDescriptionTextView.setText(factsItem.getDescription());
+            if (factsItem.getImageHref() != null && factsItem.getImageHref().length() > 0) {
+                holder.mThumbnailImageView.setImageURI(Uri.parse(factsItem.getImageHref()));
             } else {
                 holder.mThumbnailImageView.setImageResource(R.drawable.no_image_available);
             }

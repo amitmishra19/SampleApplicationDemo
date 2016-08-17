@@ -1,6 +1,6 @@
 package com.example.codingtest.retrofit;
 
-import com.example.codingtest.beans.DataModel;
+import com.example.codingtest.beans.FactsDataModel;
 import retrofit2.Call;
 import retrofit2.http.GET;
 
@@ -11,5 +11,5 @@ public interface APIService {
     String BASE_URL = "https://dl.dropboxusercontent.com";
 
     @GET("/u/746330/facts.json")
-    Call<DataModel> getFacts();
+    Call<FactsDataModel> getFacts();
 }

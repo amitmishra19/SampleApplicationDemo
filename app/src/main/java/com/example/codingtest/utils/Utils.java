@@ -4,7 +4,7 @@ import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 
-import com.example.codingtest.beans.Row;
+import com.example.codingtest.beans.Fact;
 import com.facebook.cache.disk.DiskCacheConfig;
 import com.facebook.common.internal.Supplier;
 import com.facebook.common.util.ByteConstants;
@@ -74,16 +74,16 @@ public class Utils {
     }
 
     /**
-     * Iterate through the parsed list and check is title or description is null, if so, remove that item from the list.
+     * Iterate through the parsed list and check is title null, if so, remove that item from the list.
      *
      * @param results parsed row items
      * @return processed data set
      */
-    public static List<Row> cleanFactsData(List<Row> results) {
-        Iterator<Row> iterator = results.iterator();
+    public static List<Fact> cleanFactsData(List<Fact> results) {
+        Iterator<Fact> iterator = results.iterator();
         while (iterator.hasNext()) {
-            Row tempResult = iterator.next();
-            if (tempResult.getTitle() == null || tempResult.getDescription() == null) {
+            Fact tempResult = iterator.next();
+            if (tempResult.getTitle() == null) {
                 iterator.remove();
             }
         }

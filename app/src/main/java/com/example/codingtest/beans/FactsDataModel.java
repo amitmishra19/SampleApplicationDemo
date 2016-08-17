@@ -10,14 +10,14 @@ import com.google.gson.annotations.SerializedName;
  * Pojo class for facts json response
  */
 
-public class DataModel {
+public class FactsDataModel {
 
     @SerializedName("title")
     @Expose
     private String title;
     @SerializedName("rows")
     @Expose
-    private List<Row> rows = new ArrayList<Row>();
+    private List<Fact> factsList = new ArrayList<Fact>();
 
     /**
      *
@@ -42,17 +42,17 @@ public class DataModel {
      * @return
      *     The rows
      */
-    public List<Row> getRows() {
-        return rows;
+    public List<Fact> getRows() {
+        return factsList;
     }
 
     /**
      *
-     * @param rows
-     *     The rows
+     * @param factses
+     *     The factses
      */
-    public void setRows(List<Row> rows) {
-        this.rows = rows;
+    public void setRows(List<Fact> factses) {
+        this.factsList = factses;
     }
 
 }
